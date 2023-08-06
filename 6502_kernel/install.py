@@ -7,8 +7,8 @@ from jupyter_client.kernelspec import KernelSpecManager
 from IPython.utils.tempdir import TemporaryDirectory
 
 kernel_json = {
-    "argv": [sys.executable, "-m", "asm_kernel", "-f", "{connection_file}"],
-    "display_name": "ASM",
+    "argv": [sys.executable, "-m", "6502_kernel", "-f", "{connection_file}"],
+    "display_name": "6502",
     "language": "asm",
 }
 

@@ -1,1 +1,1 @@
-from .kernel import ASMKernel
+from .kernel import ASM6502Kernel
