@@ -260,13 +260,13 @@ namespace CPU
     }
 
     void printState (unsigned op, u16 oPC) {
-        printf("op: %s ", op_name_table[op]);
+        printf("%s ", op_name_table[op]);
         if (address_len_table[op]) {
-          printf("$%02x%02x ", (address_len_table[op] > 1) ? RB(oPC+2) : 0x00, RB(oPC+1));
+          printf("$%02x%02x   ", (address_len_table[op] > 1) ? RB(oPC+2) : 0x00, RB(oPC+1));
         } else {
-          printf("      ");
+          printf("        ");
         }
-        printf("PC: %06u, A:%u , X: %u, Y: %u S: " BYTE_TO_BINARY_PATTERN, PC, A, X, Y, BYTE_TO_BINARY(P.raw));
+        printf("| %u %u %u | " BYTE_TO_BINARY_PATTERN "  | %06u ",  A, X, Y, BYTE_TO_BINARY(P.raw), PC);
         printf("\n");
         return;
     }
@@ -297,11 +297,29 @@ namespace CPU
         #undef o
         #undef c
         i[op]();
-
         printState(op, oPC);
-
         reset = false;
     }
+}
+/*
+C = Carry,    Z = Zero, I = Interrupt, D = Decimal Mode
+V = Overflow, N = Negative
+
+            |       | CPU Register | Program   
+Instruction | A X Y | C Z I D V N  | Counter                  
+LDA $0001   | 1 0 0 | 0 0 0 0 0 0  | 049154   
+STA $0005   | 1 0 0 | 0 0 0 0 0 0  | 049156   
+BRK         | 1 0 0 | 0 0 1 0 0 0  | 000000   
+*/
+void printHeader() {
+  printf("C = Carry,    Z = Zero, I = Interrupt, D = Decimal Mode\n"
+         "V = Overflow, N = Negative                             \n"
+         "                                                       \n"
+         "            |       | CPU Register | Program           \n"
+         "Instruction | A X Y | C Z I D V N  | Counter           \n"
+         "----------- | ----- | -----------  | -------           \n"
+         );
+
 }
 
 int main(int/*argc*/, char** argv)
@@ -330,11 +348,17 @@ int main(int/*argc*/, char** argv)
     for(unsigned a=0; a<0x800; ++a)
         CPU::RAM[a] = (a&4) ? 0xFF : 0x00;
 
+    printHeader();
+
     // Run the CPU until we run out of instructions.
     for(;;) {
-      CPU::Op();
-      if (!CPU::PC) break;
+        CPU::Op();
+        if (!CPU::PC) break;
     }
+
+    for(unsigned a=0; a<0x10; ++a)
+        printf("%02x ", CPU::RAM[a]);
+    printf("\n");
 }
 
 

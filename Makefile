@@ -4,11 +4,14 @@ CXX=g++
 CXXFLAGS=-g -Wall -Wno-misleading-indentation -Wno-implicit-fallthrough -Wno-unused-result -W -pedantic -Ofast -std=c++0x
 CXXFLAGS += `pkg-config sdl --libs --cflags`
 
-6502_kernel: 6502_kernel.o
+little_6502_emu: little_6502_emu.o
 	$(CXX) -o "$@" "$<" $(CXXFLAGS)
 
-6502_kernel.o: 6502_kernel.cc
+little_6502_emu.o: little_6502_emu.cc
 	$(CXX) -c -o "$@" "$<" $(CXXFLAGS)
 
-
+.PHONY: install
+install: little_6502_emu
+	install -d /usr/local/bin/
+	install little_6502_emu /usr/local/bin/
 
