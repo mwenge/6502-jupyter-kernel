@@ -2,7 +2,6 @@
 #
 CXX=g++
 CXXFLAGS=-g -Wall -Wno-misleading-indentation -Wno-implicit-fallthrough -Wno-unused-result -W -pedantic -Ofast -std=c++0x
-CXXFLAGS += `pkg-config sdl --libs --cflags`
 
 little_6502_emu: little_6502_emu.o
 	$(CXX) -o "$@" "$<" $(CXXFLAGS)

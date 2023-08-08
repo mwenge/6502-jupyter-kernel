@@ -71,8 +71,8 @@ class ASM6502Kernel(Kernel):
     implementation_version = '1.0'
     language = 'asm'
     language_version = '6502'
-    language_info = {'name': 'asm',
-                     'mimetype': 'text/plain',
+    language_info = {'name': 'gas',
+                     'mimetype': 'text/x-gas',
                      'file_extension': '.s'}
     banner = "ASM 6502 kernel.\n" \
              "Uses 64tass, compiles in C11, and creates source code files and executables in temporary folder.\n"
@@ -123,7 +123,7 @@ class ASM6502Kernel(Kernel):
                 p.write_contents()
                 if p.returncode != 0:  # Compilation failed
                     self._write_to_stderr(
-                            "[C kernel] GCC exited with code {}, the executable will not be executed".format(
+                            "[6502 kernel] 64tass exited with code {}, the executable will not be executed".format(
                                     p.returncode))
                     return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                             'user_expressions': {}}

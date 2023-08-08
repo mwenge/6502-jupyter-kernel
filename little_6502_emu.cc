@@ -24,22 +24,22 @@ static const char* inputfn = "input.fmv";
 
 static int address_len_table[256] = {
 /*       |0|1|2|3|4|5|6|7|8|9|A|B|C|D|E|F|*/
-  /* 0 */ 0,1,0,1,1,1,1,1,0,1,1,1,2,2,2,2,/* 0 */
-  /* 1 */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* 1 */
-  /* 2 */ 2,1,0,1,1,1,1,1,0,1,1,1,2,2,2,2,/* 2 */
-  /* 3 */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* 3 */
-  /* 4 */ 0,1,0,1,1,1,1,1,0,1,1,1,2,2,2,2,/* 4 */
-  /* 5 */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* 5 */
-  /* 6 */ 0,1,0,1,1,1,1,1,0,1,1,1,1,2,2,2,/* 6 */
-  /* 7 */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* 7 */
-  /* 8 */ 1,1,1,1,1,1,1,1,0,1,0,1,2,2,2,2,/* 8 */
-  /* 9 */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* 9 */
-  /* A */ 1,1,1,1,1,1,1,1,0,1,0,1,2,2,2,2,/* A */
-  /* B */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* B */
-  /* C */ 1,1,1,1,1,1,1,1,0,1,0,1,2,2,2,2,/* C */
-  /* D */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2,/* D */
-  /* E */ 1,1,1,1,1,1,1,1,0,1,0,1,2,2,2,2,/* E */
-  /* F */ 1,1,0,1,1,1,1,1,0,2,0,2,2,2,2,2  /* F */
+  /* 0 */  0, 1, 0, 1, 1, 1, 1, 1, 0,-1, 1,-1, 2, 2, 2, 2,  /* 0 */
+  /* 1 */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* 1 */
+  /* 2 */  2, 1, 0, 1, 1, 1, 1, 1, 0,-1, 1,-1, 2, 2, 2, 2,  /* 2 */
+  /* 3 */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* 3 */
+  /* 4 */  0, 1, 0, 1, 1, 1, 1, 1, 0,-1, 1,-1, 2, 2, 2, 2,  /* 4 */
+  /* 5 */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* 5 */
+  /* 6 */  0, 1, 0, 1, 1, 1, 1, 1, 0,-1, 1,-1, 2, 2, 2, 2,  /* 6 */
+  /* 7 */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* 7 */
+  /* 8 */ -1, 1,-1, 1, 1, 1, 1, 1, 0,-1, 0,-1, 2, 2, 2, 2,  /* 8 */
+  /* 9 */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* 9 */
+  /* A */ -1, 1,-1, 1, 1, 1, 1, 1, 0,-1, 0,-1, 2, 2, 2, 2,  /* A */
+  /* B */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* B */
+  /* C */ -1, 1,-1, 1, 1, 1, 1, 1, 0,-1, 0,-1, 2, 2, 2, 2,  /* C */
+  /* D */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2,  /* D */
+  /* E */ -1, 1,-1, 1, 1, 1, 1, 1, 0,-1, 0,-1, 2, 2, 2, 2,  /* E */
+  /* F */  1, 1, 0, 1, 1, 1, 1, 1, 0, 2, 0, 2, 2, 2, 2, 2   /* F */
 };
 
 static const char* op_name_table[256] = {
@@ -261,12 +261,13 @@ namespace CPU
 
     void printState (unsigned op, u16 oPC) {
         printf("%s ", op_name_table[op]);
+        printf("%s", (address_len_table[op] == -1) ? "#" : address_len_table[op] ? "$" : "");
         if (address_len_table[op]) {
-          printf("$%02x%02x   ", (address_len_table[op] > 1) ? RB(oPC+2) : 0x00, RB(oPC+1));
+          printf("%02X%02X   ", (address_len_table[op] > 1) ? RB(oPC+2) : 0x00, RB(oPC+1));
         } else {
           printf("        ");
         }
-        printf("| %u %u %u | " BYTE_TO_BINARY_PATTERN "  | %06u ",  A, X, Y, BYTE_TO_BINARY(P.raw), PC);
+        printf("| %02X %02X %02X | " BYTE_TO_BINARY_PATTERN "  | %06u ",  A, X, Y, BYTE_TO_BINARY(P.raw), PC);
         printf("\n");
         return;
     }
@@ -312,14 +313,34 @@ STA $0005   | 1 0 0 | 0 0 0 0 0 0  | 049156
 BRK         | 1 0 0 | 0 0 1 0 0 0  | 000000   
 */
 void printHeader() {
-  printf("C = Carry,    Z = Zero, I = Interrupt, D = Decimal Mode\n"
+    printf(
+         "CPU Register Legend:                                   \n"
+         "C = Carry,    Z = Zero, I = Interrupt, D = Decimal Mode\n"
          "V = Overflow, N = Negative                             \n"
          "                                                       \n"
-         "            |       | CPU Register | Program           \n"
-         "Instruction | A X Y | C Z I D V N  | Counter           \n"
-         "----------- | ----- | -----------  | -------           \n"
+         "Execution History (Values are after execution.)        \n"
+         "                                                       \n"
+         "                       | CPU Register | Program           \n"
+         "Instruction |  A  X  Y | C Z I D V N  | Counter           \n"
+         "----------- | -- -- -- | -----------  | -------           \n"
+         );
+}
+
+void printZeroPage() {
+    printf(
+         "                                                       \n"
+         "First 256 Bytes of Zero Page After Execution Completed \n"
+         "                                                       \n"
+         "    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F    \n"
+         "    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --    \n"
          );
 
+    for(unsigned i=0; i<0x10; ++i) {
+        printf("%02X |", i);
+        for(unsigned a=i*0x10; a<(i*0x10)+0x10; ++a)
+            printf("%02X ", CPU::RAM[a]);
+        printf("\n");
+    }
 }
 
 int main(int/*argc*/, char** argv)
@@ -349,16 +370,13 @@ int main(int/*argc*/, char** argv)
         CPU::RAM[a] = (a&4) ? 0xFF : 0x00;
 
     printHeader();
-
     // Run the CPU until we run out of instructions.
     for(;;) {
         CPU::Op();
         if (!CPU::PC) break;
     }
+    printZeroPage();
 
-    for(unsigned a=0; a<0x10; ++a)
-        printf("%02x ", CPU::RAM[a]);
-    printf("\n");
 }
 
 
