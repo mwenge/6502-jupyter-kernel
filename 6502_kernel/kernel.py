@@ -71,8 +71,8 @@ class ASM6502Kernel(Kernel):
     implementation_version = '1.0'
     language = 'asm'
     language_version = '6502'
-    language_info = {'name': 'gas',
-                     'mimetype': 'text/x-gas',
+    language_info = {'name': 'z80',
+                     'mimetype': 'text/x-z80',
                      'file_extension': '.s'}
     banner = "ASM 6502 kernel.\n" \
              "Uses 64tass, compiles in C11, and creates source code files and executables in temporary folder.\n"
