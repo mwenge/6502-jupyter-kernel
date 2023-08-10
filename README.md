@@ -21,4 +21,4 @@ python -m 6502_kernel.install
 
 Notebook: The New menu in the notebook should show an option for a 6502 notebook.
 
-Try out the `6502-Examples.ipynb` notebook to see examples of usage.
+Try out the [`6502-Examples.ipynb`](6502-Examples.ipynb) notebook to see examples of usage.
